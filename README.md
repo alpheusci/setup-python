@@ -24,14 +24,14 @@ Add this action to the workflow:
       # Default: latest
       interpreter-version: "latest"
 
-      # Python package manager to use
+      # Python package manager to use.
       #
       # Example: pip, pipenv, poetry, uv, pixi
       #
       # Default: uv
       package-manager: "uv"
 
-      # Python package manager version to use
+      # Python package manager version to use.
       #
       # Default: latest
       package-manager-version: "latest"
