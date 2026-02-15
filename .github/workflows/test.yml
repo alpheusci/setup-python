@@ -50,7 +50,7 @@ jobs:
             - name: Check Python version
               run: ${{ matrix.interpreter.code == 'free-threaded' && 'python' || matrix.interpreter.code }} --version
     package-manager:
-        name: Package manager / ${{ matrix.os.name }} / Python ${{ matrix.interpreter-version.name }}  / ${{ matrix.package-manager.name }} / Frozen=${{ matrix.frozen-lockfile.name }}
+        name: Package manager / ${{ matrix.os.name }} / Python ${{ matrix.interpreter-version }}  / ${{ matrix.package-manager.name }} / Frozen=${{ matrix.frozen-lockfile.name }}
         runs-on: ${{ matrix.os.code }}
 
         strategy:
