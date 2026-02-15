@@ -80,20 +80,24 @@ runs:
         - name: Install Pipenv
           if: ${{ inputs.package-manager == 'pipenv' && inputs.package-manager-version == 'latest' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-          run: pip install --upgrade pipenv
+          run: pipx install pipenv
 
         - name: Install Pipenv ${{ inputs.package-manager-version }}
           if: ${{ inputs.package-manager == 'pipenv' && inputs.package-manager-version != 'latest' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-          run: pip install pipenv==${{ inputs.package-manager-version }}
+          run: pipx install pipenv==${{ inputs.package-manager-version }}
 
         # install poetry
 
         - name: Install Poetry
-          if: ${{ inputs.package-manager == 'poetry' }}
-          uses: snok/install-poetry@v1
-          with:
-              version: ${{ inputs.package-manager-version }}
+          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version == 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipx install poetry
+
+        - name: Install Poetry ${{ inputs.package-manager-version }}
+          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version != 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipx install poetry==${{ inputs.package-manager-version }}
 
         # install uv
 
