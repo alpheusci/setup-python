@@ -91,7 +91,6 @@ runs:
 
         - name: Install Poetry
           if: ${{ inputs.package-manager == 'poetry' }}
-          shell: bash
           uses: snok/install-poetry@v1
           with:
               version: ${{ inputs.package-manager-version }}
