@@ -137,7 +137,7 @@ runs:
         - name: Install Python dependencies (pipenv)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pipenv' && inputs.frozen-lockfile == 'true' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-          run: pipenv install --frozen
+          run: pipenv install --ignore-pipfile
 
         - name: Install Python dependencies (pipenv, no-frozen-lockfile)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pipenv' && inputs.frozen-lockfile == 'false' }}
