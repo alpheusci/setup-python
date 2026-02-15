@@ -99,6 +99,13 @@ runs:
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pipx install poetry==${{ inputs.package-manager-version }}
 
+        # pipx ensurepath
+
+        - name: Ensure pipx PATH
+          if: ${{ contains(fromJson('["pipenv","poetry"]'), inputs.package-manager) }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipx ensurepath
+
         # install uv
 
         - name: Install uv
