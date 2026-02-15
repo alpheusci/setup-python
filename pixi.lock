@@ -1105,7 +1105,8 @@ packages:
 - pypi: ./
   name: workspace
   version: 0.0.0
-  sha256: e3ca6d765b2c3d54ffc61aac9776a7eba5a7578f476e7190b538a3b2eb0ed700
+  sha256: 0569f525e255b6e1351835620025bcad0154dbe614ee2a3ded583de1b29ae41a
+  requires_python: '>=3.10'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb78ec9c_6.conda
   sha256: 68f0206ca6e98fea941e5717cec780ed2873ffabc0e1ed34428c061e2c6268c7
   md5: 4a13eeac0b5c8e5b8ab496e6c4ddd829
