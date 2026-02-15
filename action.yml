@@ -136,6 +136,7 @@ runs:
                       steps.resolve-graalpy.outputs.python-version ||
                       steps.resolve-free-threaded.outputs.python-version
                   }}
+              cache: ""
 
         # auto install (pip)
 
