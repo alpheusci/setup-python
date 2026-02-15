@@ -1,0 +1,13 @@
+# Caches
+__MACOSX/
+.DS_Store
+
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Virtual environments
+/.venv/
+
+# Pip cache
+*.egg-info

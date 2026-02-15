@@ -1,0 +1,157 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-action.json
+
+name: Alpheus - Setup Python environment
+description: Setup environment for a Python project
+author: Alpheus
+branding:
+    icon: settings
+    color: white
+
+inputs:
+    interpreter:
+        description: Python interpreter to use
+        default: python
+
+    interpreter-version:
+        description: Python interpreter version to use
+        default: latest
+
+    package-manager:
+        description: Python package manager to use
+        default: uv
+
+    package-manager-version:
+        description: Python package manager version to use
+        default: latest
+
+    auto-install:
+        description: Whether to install Python dependencies
+        default: "true"
+
+    frozen-lockfile:
+        description: Whether to frozen lockfile
+        default: "true"
+
+runs:
+    using: composite
+    steps:
+        # resolve python version
+
+        - name: Resolve Python version
+          id: resolve-python
+          if: ${{ inputs.interpreter == 'python' }}
+          shell: bash
+          run: echo "python-version=${{ inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+
+        - name: Resolve Python version (PyPy)
+          id: resolve-pypy
+          if: ${{ inputs.interpreter == 'pypy' }}
+          shell: bash
+          run: echo "python-version=pypy${{ inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+
+        - name: Resolve Python version (GraalPy)
+          id: resolve-graalpy
+          if: ${{ inputs.interpreter == 'graalpy' }}
+          shell: bash
+          run: echo "python-version=graalpy-${{ inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+
+        - name: Resolve Python version (free-threaded)
+          id: resolve-free-threaded
+          if: ${{ inputs.interpreter == 'free-threaded' }}
+          shell: bash
+          run: echo "python-version=${{ inputs.interpreter-version }}t" >> "$GITHUB_OUTPUT"
+
+        # setup
+
+        - name: Setup Python
+          uses: actions/setup-python@v6
+          with:
+              python-version: |
+                  ${{ 
+                    steps.resolve-python.outputs.python-version ||
+                    steps.resolve-pypy.outputs.python-version ||
+                    steps.resolve-graalpy.outputs.python-version ||
+                    steps.resolve-free-threaded.outputs.python-version
+                  }}
+              cache: ${{ contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '' }}
+
+        # install uv
+
+        - name: Install uv
+          if: ${{ inputs.package-manager == 'uv' }}
+          uses: astral-sh/setup-uv@v7
+          with:
+              version: ${{ inputs.package-manager-version }}
+
+        # install pixi
+
+        - name: Install pixi
+          if: ${{ inputs.package-manager == 'pixi' }}
+          uses: pixi-dev/pixi-action@v0.9.4
+          with:
+              pixi-version: ${{ inputs.package-manager-version }}
+              cache: true
+
+        # auto install (pip)
+
+        - name: Install Python dependencies (pip)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pip' }}
+          shell: bash
+          run: |
+              python -m pip install --upgrade pip
+
+              if [ -f requirements.txt ]; then
+                  python -m pip install -r requirements.txt
+              fi
+
+              if [ -f requirements-dev.txt ]; then
+                  python -m pip install -r requirements-dev.txt
+              fi
+
+        # auto install (pipenv)
+
+        - name: Install Python dependencies (pipenv)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pipenv' && inputs.frozen-lockfile == 'true' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipenv install --frozen
+
+        - name: Install Python dependencies (pipenv, no-frozen-lockfile)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pipenv' && inputs.frozen-lockfile == 'false' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipenv install
+
+        # auto install (poetry)
+
+        - name: Install Python dependencies (poetry)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'poetry' && inputs.frozen-lockfile == 'true' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: poetry install --sync
+
+        - name: Install Python dependencies (poetry, no-frozen-lockfile)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'poetry' && inputs.frozen-lockfile == 'false' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: poetry install
+
+        # auto install (uv)
+
+        - name: Install Python dependencies (uv)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'uv' && inputs.frozen-lockfile == 'true' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: uv sync --all-packages --frozen
+
+        - name: Install Python dependencies (uv, no-frozen-lockfile)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'uv' && inputs.frozen-lockfile == 'false' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: uv sync --all-packages
+
+        # auto install (pixi)
+
+        - name: Install Python dependencies (pixi)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pixi' && inputs.frozen-lockfile == 'true' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pixi install --frozen
+
+        - name: Install Python dependencies (pixi, no-frozen-lockfile)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pixi' && inputs.frozen-lockfile == 'false' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pixi install

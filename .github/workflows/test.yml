@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-workflow.json
+
+name: Test
+
+on:
+    pull_request:
+        branches:
+            - main
+    push:
+        branches:
+            - main
+
+jobs:
+    interpreter:
+        name: Interpreter / ${{ matrix.os.name }} / ${{ matrix.interpreter.name }}
+        runs-on: ${{ matrix.os.code }}
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - name: Linux
+                      code: ubuntu-latest
+                    - name: macOS
+                      code: macos-latest
+                    - name: Windows
+                      code: windows-latest
+
+                interpreter:
+                    - name: Python
+                      code: python
+                    - name: PyPy
+                      code: pypy
+                    - name: GraalPy
+                      code: graalpy
+                    - name: Free-threaded
+                      code: free-threaded
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: ./
+              with:
+                  interpreter: ${{ matrix.interpreter.code }}
+                  package-manager: pip
+                  auto-install: false
+
+            - name: Check Python version
+              run: ${{ matrix.interpreter.code }} --version
+    package-manager:
+        name: Package manager / ${{ matrix.os.name }} / Python ${{ matrix.interpreter-version.name }}  / ${{ matrix.package-manager.name }} / Frozen=${{ matrix.frozen-lockfile.name }}
+        runs-on: ${{ matrix.os.code }}
+
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - name: Linux
+                      code: ubuntu-latest
+                    - name: macOS
+                      code: macos-latest
+                    - name: Windows
+                      code: windows-latest
+
+                interpreter-version:
+                    - 3.10
+                    - 3.11
+                    - 3.12
+                    - 3.13
+                    - 3.14
+
+                package-manager:
+                    - name: Pip
+                      code: pip
+                    - name: Pipenv
+                      code: pipenv
+                    - name: Poetry
+                      code: poetry
+                    - name: uv
+                      code: uv
+                    - name: Pixi
+                      code: pixi
+
+                frozen-lockfile:
+                    - name: True
+                      code: true
+                    - name: False
+                      code: false
+        
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: ./
+              with:
+                  package-manager: ${{ matrix.package-manager.code }}
+                  frozen-lockfile: ${{ matrix.frozen-lockfile.code }}
+
+            - name: Check package manager version
+              run: ${{ matrix.package-manager.code }} --version

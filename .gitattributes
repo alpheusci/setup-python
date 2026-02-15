@@ -1,0 +1,10 @@
+# Set text files to use LF line endings
+* text eol=lf
+
+# Setup for YAML files
+*.yml linguist-detectable=true
+*.yml linguist-documentation=false
+*.yaml linguist-detectable=true
+*.yaml linguist-documentation=false
+# SCM syntax highlighting & preventing 3-way merges
+pixi.lock merge=binary linguist-language=YAML linguist-generated=true -diff
