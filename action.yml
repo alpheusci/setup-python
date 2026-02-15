@@ -105,6 +105,11 @@ runs:
         # setup
 
         - name: Setup Python
+          if: |
+              ${{
+                  !(runner.os == 'Windows' && inputs.interpreter == 'graalpy') &&
+                  contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager)
+              }}
           uses: actions/setup-python@v6
           with:
               python-version: |
@@ -114,10 +119,22 @@ runs:
                       steps.resolve-graalpy.outputs.python-version ||
                       steps.resolve-free-threaded.outputs.python-version
                   }}
-              cache: |
-                  ${{
-                      inputs.interpreter == 'graalpy' && runner.os == 'Windows' && '' ||
-                      (contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '')
+              cache: ${{ inputs.package-manager }}
+
+        - name: Setup Python (No Cache)
+          if: |
+              ${{
+                  (runner.os == 'Windows' && inputs.interpreter == 'graalpy') ||
+                  !(contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager))
+              }}
+          uses: actions/setup-python@v6
+          with:
+              python-version: |
+                  ${{ 
+                      steps.resolve-python.outputs.python-version ||
+                      steps.resolve-pypy.outputs.python-version ||
+                      steps.resolve-graalpy.outputs.python-version ||
+                      steps.resolve-free-threaded.outputs.python-version
                   }}
 
         # auto install (pip)
