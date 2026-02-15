@@ -41,25 +41,25 @@ runs:
           id: resolve-python
           if: ${{ inputs.interpreter == 'python' }}
           shell: bash
-          run: echo "python-version=${{ inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+          run: echo "python-version=${{ inputs.interpreter-version == 'latest' && 'latest' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
 
         - name: Resolve Python version (PyPy)
           id: resolve-pypy
           if: ${{ inputs.interpreter == 'pypy' }}
           shell: bash
-          run: echo "python-version=pypy${{ inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+          run: echo "python-version=pypy${{ inputs.interpreter-version == 'latest' && '3.11' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
 
         - name: Resolve Python version (GraalPy)
           id: resolve-graalpy
           if: ${{ inputs.interpreter == 'graalpy' }}
           shell: bash
-          run: echo "python-version=graalpy-${{ inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+          run: echo "python-version=graalpy-${{ inputs.interpreter-version == 'latest' && '25' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
 
         - name: Resolve Python version (free-threaded)
           id: resolve-free-threaded
           if: ${{ inputs.interpreter == 'free-threaded' }}
           shell: bash
-          run: echo "python-version=${{ inputs.interpreter-version }}t" >> "$GITHUB_OUTPUT"
+          run: echo "python-version=${{ inputs.interpreter-version == 'latest' && '3.14' || inputs.interpreter-version }}t" >> "$GITHUB_OUTPUT"
 
         # setup
 
