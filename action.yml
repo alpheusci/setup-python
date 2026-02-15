@@ -87,7 +87,7 @@ runs:
 
         - name: Install pixi
           if: ${{ inputs.package-manager == 'pixi' }}
-          uses: pixi-dev/pixi-action@v0.9.4
+          uses: prefix-dev/setup-pixi@v0.9.4
           with:
               pixi-version: ${{ inputs.package-manager-version }}
               cache: true
