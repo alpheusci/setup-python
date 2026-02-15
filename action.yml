@@ -109,12 +109,16 @@ runs:
           with:
               python-version: |
                   ${{ 
-                    steps.resolve-python.outputs.python-version ||
-                    steps.resolve-pypy.outputs.python-version ||
-                    steps.resolve-graalpy.outputs.python-version ||
-                    steps.resolve-free-threaded.outputs.python-version
+                      steps.resolve-python.outputs.python-version ||
+                      steps.resolve-pypy.outputs.python-version ||
+                      steps.resolve-graalpy.outputs.python-version ||
+                      steps.resolve-free-threaded.outputs.python-version
                   }}
-              cache: ${{ contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '' }}
+              cache: |
+                  ${{
+                      inputs.interpreter == 'graalpy' && runner.os == 'Windows' && '' ||
+                      (contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '')
+                  }}
 
         # auto install (pip)
 
