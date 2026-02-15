@@ -77,27 +77,23 @@ runs:
 
         # install pipenv
 
-        - name: Install pipenv
+        - name: Install Pipenv
           if: ${{ inputs.package-manager == 'pipenv' && inputs.package-manager-version == 'latest' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pip install --upgrade pipenv
 
-        - name: Install pipenv ${{ inputs.package-manager-version }}
+        - name: Install Pipenv ${{ inputs.package-manager-version }}
           if: ${{ inputs.package-manager == 'pipenv' && inputs.package-manager-version != 'latest' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pip install pipenv==${{ inputs.package-manager-version }}
 
         # install poetry
 
-        - name: Install poetry
-          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version == 'latest' }}
-          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-          run: pip install --upgrade poetry
-
-        - name: Install poetry ${{ inputs.package-manager-version }}
-          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version != 'latest' }}
-          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-          run: pip install poetry==${{ inputs.package-manager-version }}
+        - name: Install Poetry
+          if: ${{ inputs.package-manager == 'poetry' }}
+          uses: snok/install-poetry@v1
+          with:
+              version: ${{ inputs.package-manager-version }}
 
         # install uv
 
@@ -109,7 +105,7 @@ runs:
 
         # install pixi
 
-        - name: Install pixi
+        - name: Install Pixi
           if: ${{ inputs.package-manager == 'pixi' }}
           uses: prefix-dev/setup-pixi@v0.9.4
           with:
@@ -118,7 +114,7 @@ runs:
 
         # auto install (pip)
 
-        - name: Install Python dependencies (pip)
+        - name: Install Python dependencies (Pip)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pip' }}
           shell: bash
           run: |
@@ -134,24 +130,24 @@ runs:
 
         # auto install (pipenv)
 
-        - name: Install Python dependencies (pipenv)
+        - name: Install Python dependencies (Pipenv)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pipenv' && inputs.frozen-lockfile == 'true' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pipenv install --ignore-pipfile
 
-        - name: Install Python dependencies (pipenv, no-frozen-lockfile)
+        - name: Install Python dependencies (Pipenv, no-frozen-lockfile)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pipenv' && inputs.frozen-lockfile == 'false' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pipenv install
 
         # auto install (poetry)
 
-        - name: Install Python dependencies (poetry)
+        - name: Install Python dependencies (Poetry)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'poetry' && inputs.frozen-lockfile == 'true' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: poetry install --sync
 
-        - name: Install Python dependencies (poetry, no-frozen-lockfile)
+        - name: Install Python dependencies (Poetry, no-frozen-lockfile)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'poetry' && inputs.frozen-lockfile == 'false' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: poetry install
@@ -170,12 +166,12 @@ runs:
 
         # auto install (pixi)
 
-        - name: Install Python dependencies (pixi)
+        - name: Install Python dependencies (Pixi)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pixi' && inputs.frozen-lockfile == 'true' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pixi install --frozen
 
-        - name: Install Python dependencies (pixi, no-frozen-lockfile)
+        - name: Install Python dependencies (Pixi, no-frozen-lockfile)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'pixi' && inputs.frozen-lockfile == 'false' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pixi install
