@@ -48,7 +48,7 @@ jobs:
                   auto-install: false
 
             - name: Check Python version
-              run: ${{ matrix.interpreter.code }} --version
+              run: ${{ matrix.interpreter.code == 'free-threaded' && 'python' || matrix.interpreter.code }} --version
     package-manager:
         name: Package manager / ${{ matrix.os.name }} / Python ${{ matrix.interpreter-version.name }}  / ${{ matrix.package-manager.name }} / Frozen=${{ matrix.frozen-lockfile.name }}
         runs-on: ${{ matrix.os.code }}
@@ -88,7 +88,7 @@ jobs:
                       code: true
                     - name: False
                       code: false
-        
+
         steps:
             - name: Checkout
               uses: actions/checkout@v4

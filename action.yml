@@ -41,7 +41,7 @@ runs:
           id: resolve-python
           if: ${{ inputs.interpreter == 'python' }}
           shell: bash
-          run: echo "python-version=${{ inputs.interpreter-version == 'latest' && 'latest' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
+          run: echo "python-version=${{ inputs.interpreter-version == 'latest' && '3.14' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
 
         - name: Resolve Python version (PyPy)
           id: resolve-pypy
