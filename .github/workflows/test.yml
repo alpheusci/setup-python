@@ -31,28 +31,12 @@ jobs:
                       code: python
                     - name: PyPy
                       code: pypy
-                    - name: GraalPy
-                      code: graalpy
                     - name: Free-Threaded
                       code: free-threaded
 
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-
-            # `actions/setup-python` will automactically looks for specific files
-            # and enable `cache`, which is not expected.
-            - name: Remove unnecessary files
-              if: ${{ matrix.interpreter.code == 'graalpy' }}
-              shell: bash
-              run: |
-                  rm -rf ./Pipfile
-                  rm -rf ./Pipfile.lock
-                  rm -rf ./pixi.lock
-                  rm -rf ./poetry.lock
-                  rm -rf ./pyproject.toml
-                  rm -rf ./requirements.txt
-                  rm -rf ./uv.lock
 
             - name: Setup Python
               uses: ./

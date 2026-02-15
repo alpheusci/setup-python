@@ -49,6 +49,12 @@ runs:
           shell: bash
           run: echo "python-version=pypy${{ inputs.interpreter-version == 'latest' && '3.11' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
 
+        # Windows + GraalPy is not supported
+        # because `actions/setup-python` looks for `requirements.txt`/`pyproject.toml`
+        # and enable `cache` by default.
+        #
+        # Error: Command failed: pip cache dir
+        # ERROR: pip cache commands can not function since cache is disabled.
         - name: Resolve Python version (GraalPy)
           id: resolve-graalpy
           if: ${{ inputs.interpreter == 'graalpy' }}

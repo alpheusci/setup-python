@@ -12,7 +12,7 @@ Add this action to the workflow:
   with:
       # Python interpreter to use.
       #
-      # Example: python, pypy, graalpy, free-threaded
+      # Example: python, pypy, free-threaded
       #
       # Default: python
       interpreter: "python"
