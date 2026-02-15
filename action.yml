@@ -99,12 +99,17 @@ runs:
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: pipx install poetry==${{ inputs.package-manager-version }}
 
-        # pipx ensurepath
+        # setup pipx (pipenv, poetry)
 
-        - name: Ensure pipx PATH
-          if: ${{ contains(fromJson('["pipenv","poetry"]'), inputs.package-manager) }}
-          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-          run: pipx ensurepath
+        - name: Add pipx bin to PATH
+          if: ${{ runner.os != 'Windows' && contains(fromJson('["pipenv","poetry"]'), inputs.package-manager) }}
+          shell: bash
+          run: echo "$(pipx environment --value PIPX_BIN_DIR)" >> "$GITHUB_PATH"
+
+        - name: Add pipx to PATH (Windows)
+          if: ${{ runner.os == 'Windows' && contains(fromJson('["pipenv","poetry"]'), inputs.package-manager) }}
+          shell: pwsh
+          run: echo "$env:USERPROFILE\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
         # install uv
 
