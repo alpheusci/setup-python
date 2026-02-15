@@ -61,20 +61,6 @@ runs:
           shell: bash
           run: echo "python-version=${{ inputs.interpreter-version == 'latest' && '3.14' || inputs.interpreter-version }}t" >> "$GITHUB_OUTPUT"
 
-        # setup
-
-        - name: Setup Python
-          uses: actions/setup-python@v6
-          with:
-              python-version: |
-                  ${{ 
-                    steps.resolve-python.outputs.python-version ||
-                    steps.resolve-pypy.outputs.python-version ||
-                    steps.resolve-graalpy.outputs.python-version ||
-                    steps.resolve-free-threaded.outputs.python-version
-                  }}
-              cache: ${{ contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '' }}
-
         # install pipenv
 
         - name: Install Pipenv
@@ -90,12 +76,14 @@ runs:
         # install poetry
 
         - name: Install Poetry
-          if: ${{ inputs.package-manager == 'poetry' }}
-          uses: snok/install-poetry@v1
-          with:
-              version: ${{ inputs.package-manager-version }}
-              virtualenvs-create: true
-              virtualenvs-in-project: true
+          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version == 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipx install poetry
+
+        - name: Install Poetry ${{ inputs.package-manager-version }}
+          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version != 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pipx install poetry==${{ inputs.package-manager-version }}
 
         # install uv
 
@@ -113,6 +101,20 @@ runs:
           with:
               pixi-version: ${{ inputs.package-manager-version }}
               cache: true
+
+        # setup
+
+        - name: Setup Python
+          uses: actions/setup-python@v6
+          with:
+              python-version: |
+                  ${{ 
+                    steps.resolve-python.outputs.python-version ||
+                    steps.resolve-pypy.outputs.python-version ||
+                    steps.resolve-graalpy.outputs.python-version ||
+                    steps.resolve-free-threaded.outputs.python-version
+                  }}
+              cache: ${{ contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '' }}
 
         # auto install (pip)
 
