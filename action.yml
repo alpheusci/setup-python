@@ -75,6 +75,30 @@ runs:
                   }}
               cache: ${{ contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) && inputs.package-manager || '' }}
 
+        # install pipenv
+
+        - name: Install pipenv
+          if: ${{ inputs.package-manager == 'pipenv' && inputs.package-manager-version == 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pip install --upgrade pipenv
+
+        - name: Install pipenv ${{ inputs.package-manager-version }}
+          if: ${{ inputs.package-manager == 'pipenv' && inputs.package-manager-version != 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pip install pipenv==${{ inputs.package-manager-version }}
+
+        # install poetry
+
+        - name: Install poetry
+          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version == 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pip install --upgrade poetry
+
+        - name: Install poetry ${{ inputs.package-manager-version }}
+          if: ${{ inputs.package-manager == 'poetry' && inputs.package-manager-version != 'latest' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: pip install poetry==${{ inputs.package-manager-version }}
+
         # install uv
 
         - name: Install uv
