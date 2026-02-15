@@ -148,12 +148,12 @@ runs:
 
         - name: Install Python dependencies (Poetry)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'poetry' && inputs.frozen-lockfile == 'true' }}
-          shell: bash
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: poetry install --sync
 
         - name: Install Python dependencies (Poetry, no-frozen-lockfile)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'poetry' && inputs.frozen-lockfile == 'false' }}
-          shell: bash
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
           run: poetry install
 
         # auto install (uv)

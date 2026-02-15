@@ -33,7 +33,7 @@ jobs:
                       code: pypy
                     - name: GraalPy
                       code: graalpy
-                    - name: Free-threaded
+                    - name: Free-Threaded
                       code: free-threaded
 
         steps:
@@ -96,6 +96,7 @@ jobs:
             - name: Setup Python
               uses: ./
               with:
+                  interpreter-version: ${{ matrix.interpreter-version }}
                   package-manager: ${{ matrix.package-manager.code }}
                   frozen-lockfile: ${{ matrix.frozen-lockfile.code }}
 
