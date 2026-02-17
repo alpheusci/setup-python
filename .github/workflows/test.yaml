@@ -29,10 +29,10 @@ jobs:
                 interpreter:
                     - name: Python
                       code: python
-                    - name: PyPy
-                      code: pypy
                     - name: Free-Threaded
                       code: free-threaded
+                    - name: PyPy
+                      code: pypy
 
         steps:
             - name: Checkout

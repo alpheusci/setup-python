@@ -43,6 +43,12 @@ runs:
           shell: bash
           run: echo "python-version=${{ inputs.interpreter-version == 'latest' && '3.14' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
 
+        - name: Resolve Python version (free-threaded)
+          id: resolve-free-threaded
+          if: ${{ inputs.interpreter == 'free-threaded' }}
+          shell: bash
+          run: echo "python-version=${{ inputs.interpreter-version == 'latest' && '3.14' || inputs.interpreter-version }}t" >> "$GITHUB_OUTPUT"
+
         - name: Resolve Python version (PyPy)
           id: resolve-pypy
           if: ${{ inputs.interpreter == 'pypy' }}
@@ -60,12 +66,6 @@ runs:
           if: ${{ inputs.interpreter == 'graalpy' }}
           shell: bash
           run: echo "python-version=graalpy-${{ inputs.interpreter-version == 'latest' && '25' || inputs.interpreter-version }}" >> "$GITHUB_OUTPUT"
-
-        - name: Resolve Python version (free-threaded)
-          id: resolve-free-threaded
-          if: ${{ inputs.interpreter == 'free-threaded' }}
-          shell: bash
-          run: echo "python-version=${{ inputs.interpreter-version == 'latest' && '3.14' || inputs.interpreter-version }}t" >> "$GITHUB_OUTPUT"
 
         # install pipenv
 
@@ -117,9 +117,9 @@ runs:
               python-version: |
                   ${{ 
                       steps.resolve-python.outputs.python-version ||
+                      steps.resolve-free-threaded.outputs.python-version ||
                       steps.resolve-pypy.outputs.python-version ||
-                      steps.resolve-graalpy.outputs.python-version ||
-                      steps.resolve-free-threaded.outputs.python-version
+                      steps.resolve-graalpy.outputs.python-version
                   }}
               cache: ${{ inputs.package-manager }}
 
@@ -130,9 +130,9 @@ runs:
               python-version: |
                   ${{ 
                       steps.resolve-python.outputs.python-version ||
+                      steps.resolve-free-threaded.outputs.python-version ||
                       steps.resolve-pypy.outputs.python-version ||
-                      steps.resolve-graalpy.outputs.python-version ||
-                      steps.resolve-free-threaded.outputs.python-version
+                      steps.resolve-graalpy.outputs.python-version
                   }}
 
         # auto install (pip)
