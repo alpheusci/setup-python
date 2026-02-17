@@ -177,6 +177,11 @@ runs:
 
         # auto install (uv)
 
+        - name: Initialize virtual environment (uv)
+          if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'uv' }}
+          shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+          run: uv venv --no-managed-python --clear
+
         - name: Install Python dependencies (uv)
           if: ${{ inputs.auto-install == 'true' && inputs.package-manager == 'uv' && inputs.frozen-lockfile == 'true' }}
           shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
