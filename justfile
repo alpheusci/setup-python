@@ -9,3 +9,8 @@ renew:
     poetry install
     uv sync --all-packages
     pixi install
+
+# Update tag
+up-tag:
+    git tag -f v1
+    git push -f origin v1
