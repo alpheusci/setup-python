@@ -112,7 +112,7 @@ runs:
 
         - name: Setup Python
           if: ${{ contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager) }}
-          uses: actions/setup-python@v6
+          uses: actions/setup-python@v7
           with:
               python-version: |
                   ${{ 
@@ -125,7 +125,7 @@ runs:
 
         - name: Setup Python (No Cache)
           if: ${{ !(contains(fromJson('["pip","pipenv","poetry"]'), inputs.package-manager)) }}
-          uses: actions/setup-python@v6
+          uses: actions/setup-python@v7
           with:
               python-version: |
                   ${{ 
